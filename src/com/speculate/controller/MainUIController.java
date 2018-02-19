@@ -4,6 +4,7 @@ import com.speculate.objects.SpecObject;
 import com.speculate.player.Player;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -16,7 +17,7 @@ public class MainUIController {
     @FXML
     private VBox mainCenterVBox;
     @FXML
-    VBox vbox_player;
+    private VBox vbox_player;
 
 
     private ArrayList<SpecObject> specObjects = new ArrayList<>();
@@ -34,15 +35,15 @@ public class MainUIController {
     private void createSpecObjects() {
         mainCenterVBox.getChildren().clear();
 
-        specObjects.add(new SpecObject(0, "Facebook", 500, 1.8, 10));
-        specObjects.add(new SpecObject(1, "Apple", 1200, 7.5, 5));
-        specObjects.add(new SpecObject(2, "Google", 3200, -9.5, 12));
-        specObjects.add(new SpecObject(3, "Microsoft", 800, -3.2, 3));
+        specObjects.add(new SpecObject(0, "Facebook", 500, 1.8, 10, player));
+        specObjects.add(new SpecObject(1, "Apple", 1200, 7.5, 5, player));
+        specObjects.add(new SpecObject(2, "Google", 3200, -9.5, 12, player));
+        specObjects.add(new SpecObject(3, "Microsoft", 800, -3.2, 3, player));
 
         for(SpecObject so : specObjects){
             mainCenterVBox.getChildren().add(so.draw());
         }
-        player.buy(specObjects.get(0));
+        //vbox_player.getChildren().add(player.buy(specObjects.get(0), 5));
     }
 
     public ArrayList<SpecObject> getSpecObjects() {

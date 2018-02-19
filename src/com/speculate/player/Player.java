@@ -5,6 +5,7 @@ import com.speculate.objects.SpecObject;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.Insets;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -15,13 +16,10 @@ public class Player {
 
     private SimpleDoubleProperty money = new SimpleDoubleProperty();
     private ArrayList<Loan> possession = new ArrayList<>();
-    private ArrayList<SpecObject> poss = new ArrayList<>();
-    private VBox vboxMain;
     private double fortune = 0;
 
     public Player(double money, VBox vboxMain) {
         this.money.set(money);
-        this.vboxMain = vboxMain;
     }
 
     public HBox init() {
@@ -38,19 +36,27 @@ public class Player {
         return hbox0;
     }
 
-    public void buy(SpecObject so) {
-        poss.add(so);
-        HBox hbox = new HBox(10);
+    public HBox buy(SpecObject so, int amount) {
 
-        Label labelName = new Label(so.getName());
-        labelDesign(labelName);
+        if(amount <= so.getAvailability()) {
+            possession.add(new Loan(so.getIndex(), amount));
+            so.setAvailability(so.getAvailability() - amount);
+            HBox hbox = new HBox(10);
 
-        Label labelValue = new Label(Double.toString(so.getValue()));
-        labelDesign(labelValue);
+            Label labelName = new Label(so.getName());
+            labelDesign(labelName);
 
-        hbox.getChildren().addAll(labelName, labelValue);
+            Label labelValue = new Label(Double.toString(so.getValue()));
+            labelValue.textProperty().bind(Bindings.convert(so.valuePropProperty().asString("%.2f")));
+            labelDesign(labelValue);
 
-        vboxMain.getChildren().add(hbox);
+            hbox.getChildren().addAll(labelName, labelValue);
+
+            return hbox;
+        } else {
+            System.out.println("soviele kannst du nicht kaufen");
+            return null;
+        }
     }
 
     public double getMoney() {
@@ -73,14 +79,10 @@ public class Player {
         possession.add(new Loan(index, amount));
     }
 
-    public void addPoss(SpecObject so) {
-        poss.add(so);
-    }
-
     public void removeLoan(int index, int amount) {
         int counter = 0;
         for(Loan l : possession){
-            if(index == l.getIndex()){
+            if(index == l.getIndexOfSo()){
                 if(amount < l.getAmount()){
                     l.setAmount(l.getAmount() - amount);
                 } else if(amount == l.getAmount()){

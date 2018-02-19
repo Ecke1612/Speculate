@@ -1,10 +1,19 @@
 package com.speculate.objects;
 
+import com.speculate.controller.BuyAmountController;
+import com.speculate.player.Player;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
+import javafx.stage.Stage;
+
+import java.io.IOException;
 
 public class SpecObject {
 
@@ -15,14 +24,17 @@ public class SpecObject {
     private SimpleDoubleProperty differenceProp = new SimpleDoubleProperty();
     private int availability;
     private int index;
+    private Player player;
+    //private Button btn_buy = new Button("kaufen");
 
-    public SpecObject(int index, String name, double value, double growth, int availability) {
+    public SpecObject(int index, String name, double value, double growth, int availability, Player player) {
         this.index = index;
         this.name = name;
         this.valueProp = new SimpleDoubleProperty(value);
         this.growthProp = new SimpleDoubleProperty(growth);
         initialValue = value;
         this.availability = availability;
+        this.player = player;
     }
 
     public HBox draw() {
@@ -43,7 +55,25 @@ public class SpecObject {
         labelDifference.textProperty().bind(Bindings.convert(differenceProp.asString("%.2f")));
         labelDesign(labelDifference);
 
-        hbox.getChildren().addAll(labelName, labelValue, labelGrowth, labelDifference);
+        Button btn_buy = new Button("kaufen");
+        btn_buy.setOnAction(event -> {
+            BuyAmountController buyAmountController = new BuyAmountController();
+            Stage dialogStage = new Stage();
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/Alert_Buy_Amount.fxml"));
+            fxmlLoader.setController(buyAmountController);
+            Parent root = null;
+            try {
+                root = fxmlLoader.load();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            dialogStage.setTitle("Menge");
+            dialogStage.setScene(new Scene(root));
+            dialogStage.showAndWait();
+            player.buy()
+        });
+
+        hbox.getChildren().addAll(labelName, labelValue, labelGrowth, labelDifference, btn_buy);
 
         return hbox;
     }
@@ -61,6 +91,10 @@ public class SpecObject {
 
     public double getValue() {
         return valueProp.get();
+    }
+
+    public SimpleDoubleProperty valuePropProperty() {
+        return valueProp;
     }
 
     public void setValue(double value) {
@@ -97,5 +131,9 @@ public class SpecObject {
 
     public int getIndex() {
         return index;
+    }
+
+    public Button getBtn_buy() {
+        return btn_buy;
     }
 }
