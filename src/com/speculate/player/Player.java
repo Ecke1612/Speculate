@@ -1,25 +1,68 @@
 package com.speculate.player;
 
 import com.speculate.objects.Loan;
+import com.speculate.objects.SpecObject;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.geometry.Insets;
+import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 
 import java.util.ArrayList;
 
 public class Player {
 
-    private double money;
+    private SimpleDoubleProperty money = new SimpleDoubleProperty();
     private ArrayList<Loan> possession = new ArrayList<>();
+    private ArrayList<SpecObject> poss = new ArrayList<>();
+    private VBox vboxMain;
     private double fortune = 0;
 
-    public Player(double money) {
-        this.money = money;
+    public Player(double money, VBox vboxMain) {
+        this.money.set(money);
+        this.vboxMain = vboxMain;
+    }
+
+    public HBox init() {
+        HBox hbox0 = new HBox(10);
+
+        Label textMoney = new Label("Geld: ");
+
+        Label labelmoney = new Label();
+        labelmoney.textProperty().bind(Bindings.convert(money.asString("%.2f")));
+
+        Label textFortune = new Label("Gesamt Vermögen: ");
+
+        hbox0.getChildren().addAll(textMoney, labelmoney, textFortune);
+        return hbox0;
+    }
+
+    public void buy(SpecObject so) {
+        poss.add(so);
+        HBox hbox = new HBox(10);
+
+        Label labelName = new Label(so.getName());
+        labelDesign(labelName);
+
+        Label labelValue = new Label(Double.toString(so.getValue()));
+        labelDesign(labelValue);
+
+        hbox.getChildren().addAll(labelName, labelValue);
+
+        vboxMain.getChildren().add(hbox);
     }
 
     public double getMoney() {
+        return money.get();
+    }
+
+    public SimpleDoubleProperty moneyProperty() {
         return money;
     }
 
     public void setMoney(double money) {
-        this.money = money;
+        this.money.set(money);
     }
 
     public ArrayList<Loan> getPosetion() {
@@ -28,6 +71,10 @@ public class Player {
 
     public void addLoan(int index, int amount) {
         possession.add(new Loan(index, amount));
+    }
+
+    public void addPoss(SpecObject so) {
+        poss.add(so);
     }
 
     public void removeLoan(int index, int amount) {
@@ -44,5 +91,12 @@ public class Player {
             }
             counter++;
         }
+    }
+
+    private void labelDesign(Label label) {
+        label.setPadding(new Insets(2));
+        label.setStyle("" +
+                "-fx-font-size: 16px;" +
+                "-fx-fill: #818181;");
     }
 }

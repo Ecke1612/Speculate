@@ -26,8 +26,7 @@ public class SpecObject {
     }
 
     public HBox draw() {
-        HBox hbox = new HBox();
-        hbox.setSpacing(10);
+        HBox hbox = new HBox(10);
 
         Label labelName = new Label(name);
         labelDesign(labelName);

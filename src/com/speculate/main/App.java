@@ -1,6 +1,7 @@
 package com.speculate.main;
 
 import com.speculate.controller.MainUIController;
+import com.speculate.player.Player;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
