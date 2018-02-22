@@ -1,13 +1,15 @@
 package com.speculate.objects;
 
+import javafx.beans.property.SimpleIntegerProperty;
+
 public class Loan {
 
     private int indexOfSo;
-    private int amount;
+    private SimpleIntegerProperty amount = new SimpleIntegerProperty();
 
     public Loan(int indexOfSo, int amount) {
         this.indexOfSo = indexOfSo;
-        this.amount = amount;
+        this.amount.set(amount);
     }
 
     public int getIndexOfSo() {
@@ -19,10 +21,14 @@ public class Loan {
     }
 
     public int getAmount() {
-        return amount;
+        return amount.get();
     }
 
     public void setAmount(int amount) {
-        this.amount = amount;
+        this.amount.set(amount);
+    }
+
+    public SimpleIntegerProperty amountProperty() {
+        return amount;
     }
 }

@@ -23,7 +23,7 @@ public class BuyAmountController {
     }
 
     public void initialize() {
-        for(int i = 1; i < availability-1; i++) {
+        for(int i = 1; i < availability+1; i++) {
             combo_box.getItems().add(i);
         }
         combo_box.getSelectionModel().select(0);

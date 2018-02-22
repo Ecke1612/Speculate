@@ -28,6 +28,7 @@ public class SpecObject {
     private int index;
     private Player player;
     private MainUIController mainUIController;
+    private Button btn_buy;
 
     public SpecObject(int index, String name, double value, double growth, int availability, Player player, MainUIController mainUIController) {
         this.index = index;
@@ -63,7 +64,7 @@ public class SpecObject {
         labelAvailable.textProperty().bind(Bindings.convert(availability.asString()));
         labelDesign(labelAvailable);
 
-        Button btn_buy = new Button("kaufen");
+        btn_buy = new Button("kaufen");
         btn_buy.setOnAction(event -> {
             BuyAmountController buyAmountController = new BuyAmountController(availability.get());
             Stage dialogStage = new Stage();
@@ -81,6 +82,7 @@ public class SpecObject {
             buyAmountController.btn_okay.setOnAction(event1 -> {
                 //System.out.println(buyAmountController.combo_box.getSelectionModel().getSelectedItem());
                 mainUIController.vbox_player.getChildren().add(player.buy(this, (int)buyAmountController.combo_box.getSelectionModel().getSelectedItem()));
+                checkForAvailability();
                 dialogStage.close();
             });
 
@@ -96,6 +98,12 @@ public class SpecObject {
         hbox.getChildren().addAll(labelName, labelValue, labelGrowth, labelDifference, labelAvailable, btn_buy);
 
         return hbox;
+    }
+
+    private void checkForAvailability(){
+        if(availability.get()  == 0){
+            btn_buy.setDisable(true);
+        } else btn_buy.setDisable(false);
     }
 
     private void labelDesign(Label label) {

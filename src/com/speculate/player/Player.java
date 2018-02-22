@@ -39,8 +39,11 @@ public class Player {
     public HBox buy(SpecObject so, int amount) {
 
         if(amount <= so.getAvailability()) {
-            possession.add(new Loan(so.getIndex(), amount));
+            if(!checkPoessetion(so, amount)) {
+                possession.add(new Loan(so.getIndex(), amount));
+            }
             so.setAvailability(so.getAvailability() - amount);
+
             HBox hbox = new HBox(10);
 
             Label labelName = new Label(so.getName());
@@ -50,7 +53,14 @@ public class Player {
             labelValue.textProperty().bind(Bindings.convert(so.valuePropProperty().asString("%.2f")));
             labelDesign(labelValue);
 
-            hbox.getChildren().addAll(labelName, labelValue);
+            Label labelAmountText = new Label("Anzahl: ");
+            labelDesign(labelAmountText);
+
+            Label labelAmount =  new Label();
+            labelAmount.textProperty().bind(Bindings.convert(possession.get(possession.size()-1).amountProperty().asString()));
+            labelDesign(labelAmount);
+
+            hbox.getChildren().addAll(labelName, labelValue, labelAmountText, labelAmount);
 
             System.out.println("es wurden " + amount + " Anleihen von " + so.getName() + " gekauft");
 
@@ -59,6 +69,17 @@ public class Player {
             System.out.println("soviele kannst du nicht kaufen");
             return null;
         }
+    }
+
+    private boolean checkPoessetion(SpecObject so, int amount){
+        boolean hit = false;
+        for(Loan l : possession) {
+            if(so.getIndex() == l.getIndexOfSo()){
+                l.setAmount(l.getAmount() + amount);
+                hit = true;
+            }
+        }
+        return hit;
     }
 
     public double getMoney() {
