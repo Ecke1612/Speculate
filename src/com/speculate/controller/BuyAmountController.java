@@ -10,17 +10,23 @@ public class BuyAmountController {
     @FXML
     VBox vbox_main;
     @FXML
-    ComboBox combo_box;
+    public ComboBox combo_box;
     @FXML
-    Button btn_okay;
+    public Button btn_okay;
     @FXML
-    Button btn_abort;
+    public Button btn_abort;
 
-    public BuyAmountController() {
+    private int availability;
 
+    public BuyAmountController(int availability) {
+        this.availability = availability;
     }
 
     public void initialize() {
-
+        for(int i = 1; i < availability-1; i++) {
+            combo_box.getItems().add(i);
+        }
+        combo_box.getSelectionModel().select(0);
     }
+
 }

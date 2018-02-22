@@ -17,7 +17,7 @@ public class MainUIController {
     @FXML
     private VBox mainCenterVBox;
     @FXML
-    private VBox vbox_player;
+    public VBox vbox_player;
 
 
     private ArrayList<SpecObject> specObjects = new ArrayList<>();
@@ -35,10 +35,10 @@ public class MainUIController {
     private void createSpecObjects() {
         mainCenterVBox.getChildren().clear();
 
-        specObjects.add(new SpecObject(0, "Facebook", 500, 1.8, 10, player));
-        specObjects.add(new SpecObject(1, "Apple", 1200, 7.5, 5, player));
-        specObjects.add(new SpecObject(2, "Google", 3200, -9.5, 12, player));
-        specObjects.add(new SpecObject(3, "Microsoft", 800, -3.2, 3, player));
+        specObjects.add(new SpecObject(0, "Facebook", 500, 1.8, 10, player, this));
+        specObjects.add(new SpecObject(1, "Apple", 1200, 7.5, 5, player, this));
+        specObjects.add(new SpecObject(2, "Google", 3200, -9.5, 12, player, this));
+        specObjects.add(new SpecObject(3, "Microsoft", 800, -3.2, 3, player, this));
 
         for(SpecObject so : specObjects){
             mainCenterVBox.getChildren().add(so.draw());

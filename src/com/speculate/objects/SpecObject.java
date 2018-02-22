@@ -1,9 +1,11 @@
 package com.speculate.objects;
 
 import com.speculate.controller.BuyAmountController;
+import com.speculate.controller.MainUIController;
 import com.speculate.player.Player;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
@@ -22,19 +24,20 @@ public class SpecObject {
     private SimpleDoubleProperty growthProp;
     private double initialValue;
     private SimpleDoubleProperty differenceProp = new SimpleDoubleProperty();
-    private int availability;
+    private SimpleIntegerProperty availability = new SimpleIntegerProperty();
     private int index;
     private Player player;
-    //private Button btn_buy = new Button("kaufen");
+    private MainUIController mainUIController;
 
-    public SpecObject(int index, String name, double value, double growth, int availability, Player player) {
+    public SpecObject(int index, String name, double value, double growth, int availability, Player player, MainUIController mainUIController) {
         this.index = index;
         this.name = name;
         this.valueProp = new SimpleDoubleProperty(value);
         this.growthProp = new SimpleDoubleProperty(growth);
         initialValue = value;
-        this.availability = availability;
+        this.availability.set(availability);
         this.player = player;
+        this.mainUIController = mainUIController;
     }
 
     public HBox draw() {
@@ -55,9 +58,14 @@ public class SpecObject {
         labelDifference.textProperty().bind(Bindings.convert(differenceProp.asString("%.2f")));
         labelDesign(labelDifference);
 
+
+        Label labelAvailable = new Label();
+        labelAvailable.textProperty().bind(Bindings.convert(availability.asString()));
+        labelDesign(labelAvailable);
+
         Button btn_buy = new Button("kaufen");
         btn_buy.setOnAction(event -> {
-            BuyAmountController buyAmountController = new BuyAmountController();
+            BuyAmountController buyAmountController = new BuyAmountController(availability.get());
             Stage dialogStage = new Stage();
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/Alert_Buy_Amount.fxml"));
             fxmlLoader.setController(buyAmountController);
@@ -69,11 +77,23 @@ public class SpecObject {
             }
             dialogStage.setTitle("Menge");
             dialogStage.setScene(new Scene(root));
+
+            buyAmountController.btn_okay.setOnAction(event1 -> {
+                //System.out.println(buyAmountController.combo_box.getSelectionModel().getSelectedItem());
+                mainUIController.vbox_player.getChildren().add(player.buy(this, (int)buyAmountController.combo_box.getSelectionModel().getSelectedItem()));
+                dialogStage.close();
+            });
+
+            buyAmountController.btn_abort.setOnAction(event1 -> {
+                dialogStage.close();
+            });
+
             dialogStage.showAndWait();
-            player.buy()
+
+            //player.buy()
         });
 
-        hbox.getChildren().addAll(labelName, labelValue, labelGrowth, labelDifference, btn_buy);
+        hbox.getChildren().addAll(labelName, labelValue, labelGrowth, labelDifference, labelAvailable, btn_buy);
 
         return hbox;
     }
@@ -122,18 +142,15 @@ public class SpecObject {
     }
 
     public int getAvailability() {
-        return availability;
+        return availability.get();
     }
 
     public void setAvailability(int availability) {
-        this.availability = availability;
+        this.availability.set(availability);
     }
 
     public int getIndex() {
         return index;
     }
 
-    public Button getBtn_buy() {
-        return btn_buy;
-    }
 }

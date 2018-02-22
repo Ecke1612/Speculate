@@ -52,6 +52,8 @@ public class Player {
 
             hbox.getChildren().addAll(labelName, labelValue);
 
+            System.out.println("es wurden " + amount + " Anleihen von " + so.getName() + " gekauft");
+
             return hbox;
         } else {
             System.out.println("soviele kannst du nicht kaufen");
